@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Event Log — MeetingIQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full font-sans text-slate-200 bg-slate-900">
+
+<!-- Top bar -->
+<nav class="bg-slate-800 border-b border-slate-700 px-6 h-14 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-7 h-7 rounded-md bg-red-600 flex items-center justify-center flex-shrink-0">
+      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <span class="font-semibold text-slate-100">AI Bouncer — Security Event Log</span>
+    <span class="hidden sm:inline text-xs text-slate-500 font-mono">[ ADMIN VIEW ]</span>
+  </div>
+  <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+    Back to Dashboard
+  </a>
+</nav>
+
+<div class="max-w-screen-xl mx-auto px-6 py-8">
+
+  <!-- Header & stats -->
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-xl font-bold text-slate-100">Detected Attack Events</h1>
+      <p class="text-sm text-slate-400 mt-0.5">All payloads blocked by the Random Forest classifier</p>
+    </div>
+    <div class="flex gap-3">
+      <div class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-center">
+        <div class="text-xs text-slate-500 uppercase tracking-wide font-medium">Total Blocked</div>
+        <div class="text-2xl font-bold text-red-400 mt-0.5">{{ attacks | length }}</div>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-center">
+        <div class="text-xs text-slate-500 uppercase tracking-wide font-medium">SQLi</div>
+        <div class="text-2xl font-bold text-orange-400 mt-0.5">{{ attacks | selectattr('attack_type','equalto','SQLi') | list | length }}</div>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-center">
+        <div class="text-xs text-slate-500 uppercase tracking-wide font-medium">XSS</div>
+        <div class="text-2xl font-bold text-yellow-400 mt-0.5">{{ attacks | selectattr('attack_type','equalto','XSS') | list | length }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  {% if attacks %}
+  <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-xl">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-700 text-left text-xs text-slate-500 font-semibold uppercase tracking-wide bg-slate-800/80">
+            <th class="px-5 py-3">#</th>
+            <th class="px-5 py-3">Timestamp (UTC)</th>
+            <th class="px-5 py-3">Source IP</th>
+            <th class="px-5 py-3">Type</th>
+            <th class="px-5 py-3">Confidence</th>
+            <th class="px-5 py-3">Endpoint</th>
+            <th class="px-5 py-3">Payload</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700/60">
+          {% for a in attacks %}
+          <tr class="hover:bg-slate-700/30 transition-colors group">
+
+            <td class="px-5 py-3 text-slate-500 font-mono text-xs">{{ a.id }}</td>
+
+            <td class="px-5 py-3 font-mono text-xs text-slate-400 whitespace-nowrap">
+              {{ a.timestamp[:19].replace('T', ' ') }}
+            </td>
+
+            <td class="px-5 py-3 font-mono text-xs text-emerald-400">{{ a.ip }}</td>
+
+            <td class="px-5 py-3">
+              {% if a.attack_type == 'XSS' %}
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 text-xs font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 inline-block"></span>XSS
+              </span>
+              {% else %}
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-400 text-xs font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span>SQLi
+              </span>
+              {% endif %}
+            </td>
+
+            <td class="px-5 py-3">
+              {% set pct = (a.confidence * 100) | int %}
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full {% if pct >= 90 %}bg-red-500{% elif pct >= 70 %}bg-orange-500{% else %}bg-yellow-500{% endif %}"
+                       style="width: {{ pct }}%"></div>
+                </div>
+                <span class="text-xs font-mono {% if pct >= 90 %}text-red-400{% elif pct >= 70 %}text-orange-400{% else %}text-yellow-400{% endif %}">
+                  {{ pct }}%
+                </span>
+              </div>
+            </td>
+
+            <td class="px-5 py-3 font-mono text-xs text-blue-400">{{ a.endpoint }}</td>
+
+            <td class="px-5 py-3 max-w-xs">
+              <div class="group relative">
+                <code class="text-xs text-red-300 bg-slate-900/60 px-2 py-1 rounded font-mono break-all line-clamp-1 block cursor-pointer"
+                      title="{{ a.payload }}"
+                      onclick="togglePayload(this)">{{ a.payload }}</code>
+              </div>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="bg-slate-800 border border-slate-700 rounded-xl py-20 text-center">
+    <svg class="w-12 h-12 mx-auto mb-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+    </svg>
+    <p class="text-slate-400 text-sm">No attacks detected yet.</p>
+    <p class="text-slate-600 text-xs mt-1">All clear — the honeypot is listening.</p>
+  </div>
+  {% endif %}
+
+  <p class="text-xs text-slate-600 mt-6 text-center">
+    Powered by <span class="text-slate-500 font-medium">RandomForestClassifier</span>
+    (scikit-learn) &nbsp;·&nbsp; Full payload log also written to <code class="font-mono">honeypot.log</code>
+  </p>
+</div>
+
+<script>
+  function togglePayload(el) {
+    el.classList.toggle('line-clamp-1');
+  }
+</script>
+</body>
+</html>

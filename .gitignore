@@ -1,0 +1,24 @@
+# Database
+honeypot.db
+
+# Logs
+honeypot.log
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

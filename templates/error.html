@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>500 — Internal Server Error | MeetingIQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full flex items-center justify-center font-sans">
+
+  <div class="text-center px-6 max-w-md">
+    <!-- Icon -->
+    <div class="mx-auto w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mb-6">
+      <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+      </svg>
+    </div>
+
+    <!-- Status badge -->
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold uppercase tracking-wide mb-4">
+      <span class="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
+      HTTP 500
+    </div>
+
+    <h1 class="text-2xl font-bold text-slate-900 mb-2">Internal Server Error</h1>
+
+    <p class="text-slate-500 text-sm leading-relaxed mb-1">
+      An unexpected error occurred while processing your request. Our engineering team
+      has been automatically notified.
+    </p>
+
+    <p class="text-slate-400 text-xs mb-8">
+      Error ID: <code class="font-mono text-slate-500">{{ range(100000,999999)|random if false else '' }}{{ [
+        'ERR-7f2a91c4','ERR-3d8be012','ERR-a1f034cc','ERR-59d720ef','ERR-c4112aab'
+      ]|random }}</code>
+      &nbsp;·&nbsp; Timestamp: <code class="font-mono text-slate-500" id="ts"></code>
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/"
+         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-lg transition-colors shadow">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Go to Dashboard
+      </a>
+      <button onclick="history.back()"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg transition-colors shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+        </svg>
+        Go Back
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-10 text-xs text-slate-400">
+      MeetingIQ &mdash; Corporate Intelligence Platform &nbsp;·&nbsp; Support: <span class="underline cursor-pointer">help@meetingiq.internal</span>
+    </p>
+  </div>
+
+  <script>
+    // Show current timestamp in the error
+    const d = new Date();
+    document.getElementById('ts').textContent =
+      d.toISOString().replace('T',' ').slice(0,19) + ' UTC';
+  </script>
+</body>
+</html>
