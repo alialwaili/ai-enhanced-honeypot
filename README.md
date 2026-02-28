@@ -1,6 +1,6 @@
-# MeetingIQ — AI-Powered Meeting Archive with Security Monitoring
+# AI-Enhanced Honeypot
 
-MeetingIQ is a Flask web application that serves as an internal meeting archive with a built-in AI security layer. It uses a Random Forest classifier to detect and log SQL injection and XSS attack attempts in real time.
+An AI-Enhanced Honeypot is a Flask web application disguised as an internal meeting archive. It uses a Random Forest classifier to detect, classify, and silently log SQL injection and XSS attack attempts in real time while presenting attackers with a fake error response.
 
 ---
 
@@ -11,7 +11,7 @@ MeetingIQ is a Flask web application that serves as an internal meeting archive 
 - Meeting archive with search and pagination
 - AI-powered attack detection (SQLi and XSS classification)
 - Attack log dashboard showing detected threats, confidence scores, and attack type
-- Calendar view (2026 / 2027 / 2028)
+- Calendar view
 - Honeypot behaviour: attackers receive a fake 500 error while the attempt is logged silently
 
 ---
@@ -19,7 +19,7 @@ MeetingIQ is a Flask web application that serves as an internal meeting archive 
 ## Project Structure
 
 ```
-ai-bouncer/
+ai-enhanced-honeypot/
 ├── app.py              # Flask application
 ├── brain.py            # AI security engine (Random Forest classifier)
 ├── setup_users.py      # CLI tool to manage users in the database
@@ -42,8 +42,8 @@ The database file `honeypot.db` is created automatically on first run. It is exc
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/ai-bouncer.git
-cd ai-bouncer
+git clone https://github.com/your-username/ai-enhanced-honeypot.git
+cd ai-enhanced-honeypot
 ```
 
 ### 2. Create and activate a virtual environment
@@ -68,7 +68,7 @@ pip install -r requirements.txt
 
 ## Setting Up Users (Required Before First Run)
 
-The application does not include any pre-seeded users. You must create at least one active user before you can log in.
+The honeypot does not include any pre-seeded users. You must create at least one active user before you can log in.
 
 Use `setup_users.py` to manage users:
 
@@ -116,7 +116,7 @@ python setup_users.py delete <username>
 
 ---
 
-## Running the Application
+## Running the Honeypot
 
 After creating at least one active user, start the Flask server:
 
